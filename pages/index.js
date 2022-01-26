@@ -60,7 +60,7 @@ function Title({tag, children}){
 // export default HomePage
 
 export default function PaginaInicial() {
-    const username = 'peas';
+    const username = 'andrekubotsu';
   
     return (
       <>
