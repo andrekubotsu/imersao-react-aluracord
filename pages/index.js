@@ -38,6 +38,13 @@ export default function PaginaInicial() {
     const [username, setUsername] = useState('andrekubotsu');
     const router = useRouter();
   
+    const [userData, setUserData] = useState()
+
+    // const getUserData = async (username) => {
+    //     let response = await (await fetch(`https://api.github.com/users/${username}`)).json();
+    //     return response
+    // }
+
     return (
       <>
         <Box
@@ -96,10 +103,11 @@ export default function PaginaInicial() {
                 }}
                 type='text'
                 placeholder='Digite seu usuário'
-                onChange={(event) => {
+                onChange = {async (event) => {
                     if(event.target.value.length > 2){
-                        setUsername(event.target.value)
-                    }    
+                        await getUserData(username)
+                        setUsername(event.target.value)              
+                    }  
                 }}
               />
               <Button
@@ -150,6 +158,7 @@ export default function PaginaInicial() {
                 }}
               >
                 {username}
+                
               </Text>
             </Box>
             {/* Photo Area */}
