@@ -8,3 +8,6 @@ Project developed during this bootcamp. It uses NextJS and it was done "from scr
 - ReactJS
 - ReactDOM
 - @skynexui/components
+- @supabase/supabase-js
+
+- Supabase - back-end as a service
