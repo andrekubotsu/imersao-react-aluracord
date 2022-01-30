@@ -3,20 +3,38 @@ import React from "react";
 import appConfig from "../config.json";
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY)
+const supabaseClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
 export default function ChatPage() {
-  const [mensagem, setMensagem] = React.useState("");
-  const [listaMensagens, setListaMensagens] = React.useState([]);
+  const [message, setMessage] = React.useState("");
+  const [messagesList, setMessagesList] = React.useState([]);
 
-  function handleNovaMensagem(novaMensagem) {
-    const mensagem = {
-      id: listaMensagens.length + 1,
-      de: "andre",
-      texto: novaMensagem,
+    React.useEffect(() => {
+        supabaseClient
+            .from('messages')
+            .select('*')
+            .order('id', { ascending: false })
+            .then(({ data }) => {
+                console.log(data)
+                setMessagesList(data)
+            })
+    },[])
+
+  function handleNewMessage(newMessage) {
+    const message = {
+    //   id: messagesList.length + 1,
+      from: "Amanda",
+      message: newMessage,
     };
-    setListaMensagens([mensagem, ...listaMensagens]);
-    setMensagem("");
+
+    supabaseClient
+        .from('messages')
+        .insert([ message ])
+        .then(({ data }) => {
+            setMessagesList([data[0], ...messagesList]);
+        })
+    
+    setMessage("");
   }
 
   return (
@@ -60,7 +78,7 @@ export default function ChatPage() {
             padding: "16px",
           }}
         >
-          <MessageList mensagens={listaMensagens} />
+          <MessageList mensagens={messagesList} />
 
           <Box
             as="form"
@@ -70,15 +88,15 @@ export default function ChatPage() {
             }}
           >
             <TextField
-              value={mensagem}
+              value={message}
               onChange={(event) => {
                 const valor = event.target.value;
-                setMensagem(valor);
+                setMessage(valor);
               }}
               onKeyPress={(event) => {
                 if (event.key === "Enter") {
                   event.preventDefault();
-                  handleNovaMensagem(mensagem);
+                  handleNewMessage(message);
                 }
               }}
               placeholder="Insira sua mensagem aqui..."
@@ -94,14 +112,18 @@ export default function ChatPage() {
                 color: appConfig.theme.colors.neutrals[200],
               }}
             />
-            //TODO: add submit button
-            //TODO: add remove message using filter()
+          
           </Box>
         </Box>
       </Box>
     </Box>
   );
 }
+
+//TODO: add submit button
+//TODO: add remove message using filter()
+//TODO: add profile card on mouse over user photo
+//TODO: add more functions?
 
 function Header() {
   return (
@@ -140,10 +162,10 @@ function MessageList(props) {
         marginBottom: "16px",
       }}
     >
-      {props.mensagens.map((mensagem) => {
+      {props.mensagens.map((message) => {
         return (
           <Text
-            key={mensagem.id}
+            key={message.id}
             tag="li"
             styleSheet={{
               borderRadius: "5px",
@@ -167,9 +189,9 @@ function MessageList(props) {
                   display: "inline-block",
                   marginRight: "8px",
                 }}
-                src={`https://github.com/vanessametonini.png`}
+                src={`https://github.com/${message.from}.png`}
               />
-              <Text tag="strong">{mensagem.de}</Text>
+              <Text tag="strong">{message.from}</Text>
               <Text
                 styleSheet={{
                   fontSize: "10px",
@@ -181,7 +203,7 @@ function MessageList(props) {
                 {new Date().toLocaleDateString()}
               </Text>
             </Box>
-            {mensagem.texto}
+            {message.message}
           </Text>
         );
       })}
