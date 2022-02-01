@@ -1,5 +1,5 @@
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
-import appConfig from '../config.json'
+import appConfig from '../../config.json'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 

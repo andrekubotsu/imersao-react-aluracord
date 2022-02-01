@@ -1,9 +1,9 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
-import appConfig from "../config.json";
+import appConfig from "../../config.json";
 import { createClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/router'
-import { ButtonSendSticker } from '../src/components/ButtonSendSticker'
+import { ButtonSendSticker } from '../components/ButtonSendSticker'
 
 const supabaseClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
