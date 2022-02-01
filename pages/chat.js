@@ -2,12 +2,27 @@ import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
 import { createClient } from '@supabase/supabase-js';
+import { useRouter } from 'next/router'
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker'
 
 const supabaseClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
 export default function ChatPage() {
   const [message, setMessage] = React.useState("");
-  const [messagesList, setMessagesList] = React.useState([]);
+  const [messagesList, setMessagesList] = React.useState([
+    // {
+    //       id: 1,
+    //       from:  'omariosouto',
+    //       message: ':sticker: https://www.alura.com.br/imersao-react-4/assets/figurinhas/Figurinha_1.png'
+    // },{
+    //       id: 2,
+    //       from:  'peas',
+    //       message: 'Eita, não tem sticker!'
+    
+    // }
+  ]);
+  const router = useRouter();
+  const loggedUser = router.query.username;
 
     React.useEffect(() => {
         supabaseClient
@@ -23,7 +38,7 @@ export default function ChatPage() {
   function handleNewMessage(newMessage) {
     const message = {
     //   id: messagesList.length + 1,
-      from: "Amanda",
+      from: loggedUser,
       message: newMessage,
     };
 
@@ -111,6 +126,11 @@ export default function ChatPage() {
                 marginRight: "12px",
                 color: appConfig.theme.colors.neutrals[200],
               }}
+            />
+            <ButtonSendSticker 
+                onStickerClick={(sticker) => {
+                    handleNewMessage(':sticker:' + sticker)
+                }}
             />
           
           </Box>
@@ -203,7 +223,14 @@ function MessageList(props) {
                 {new Date().toLocaleDateString()}
               </Text>
             </Box>
-            {message.message}
+            {/* {message.message.startsWith(':sticker:').toString()} */}
+            {message.message.startsWith(':sticker:') 
+                ? (
+                    <Image src={message.message.replace(':sticker:', '')} />
+                ) : (
+                    message.message
+                )}
+        
           </Text>
         );
       })}

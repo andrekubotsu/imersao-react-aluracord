@@ -38,7 +38,7 @@ export default function PaginaInicial() {
     const [username, setUsername] = useState('andrekubotsu');
     const router = useRouter();
   
-    const [userData, setUserData] = useState()
+    // const [userData, setUserData] = useState()
 
     // const getUserData = async (username) => {
     //     let response = await (await fetch(`https://api.github.com/users/${username}`)).json();
@@ -76,7 +76,7 @@ export default function PaginaInicial() {
               onSubmit={(event) => {
                         event.preventDefault()
                         console.log('submit!!!')
-                        router.push('/chat')
+                        router.push(`/chat?username=${username}`)
                         // window.location.href = '/chat'
                     }
                 }
@@ -105,7 +105,7 @@ export default function PaginaInicial() {
                 placeholder='Digite seu usuário'
                 onChange = {async (event) => {
                     if(event.target.value.length > 2){
-                        await getUserData(username)
+                        // await getUserData(username)
                         setUsername(event.target.value)              
                     }  
                 }}
