@@ -11,3 +11,7 @@ Project developed during this bootcamp. It uses NextJS and it was done "from scr
 - @supabase/supabase-js
 
 - Supabase - back-end as a service
+
+## Add-ons
+
+- ChakraUI
