@@ -7,20 +7,18 @@ import { ButtonSendSticker } from '../src/components/ButtonSendSticker'
 
 const supabaseClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
+function getMessagesRealTime(addMessage){
+    return supabaseClient
+                .from('messages')
+                .on('INSERT', (liveResponse) => {
+                    addMessage(liveResponse.new)
+                })
+                .subscribe()
+}
+
 export default function ChatPage() {
   const [message, setMessage] = React.useState("");
-  const [messagesList, setMessagesList] = React.useState([
-    // {
-    //       id: 1,
-    //       from:  'omariosouto',
-    //       message: ':sticker: https://www.alura.com.br/imersao-react-4/assets/figurinhas/Figurinha_1.png'
-    // },{
-    //       id: 2,
-    //       from:  'peas',
-    //       message: 'Eita, não tem sticker!'
-    
-    // }
-  ]);
+  const [messagesList, setMessagesList] = React.useState([]);
   const router = useRouter();
   const loggedUser = router.query.username;
 
@@ -30,9 +28,15 @@ export default function ChatPage() {
             .select('*')
             .order('id', { ascending: false })
             .then(({ data }) => {
-                console.log(data)
+                //  console.log(data)
                 setMessagesList(data)
             })
+        
+        getMessagesRealTime((newMessage) => {
+            setMessagesList((updatedMessagesList) => {
+                return [newMessage, ...updatedMessagesList]
+            });
+        })
     },[])
 
   function handleNewMessage(newMessage) {
@@ -46,7 +50,7 @@ export default function ChatPage() {
         .from('messages')
         .insert([ message ])
         .then(({ data }) => {
-            setMessagesList([data[0], ...messagesList]);
+           
         })
     
     setMessage("");
@@ -129,7 +133,7 @@ export default function ChatPage() {
             />
             <ButtonSendSticker 
                 onStickerClick={(sticker) => {
-                    handleNewMessage(':sticker:' + sticker)
+                    handleNewMessage(':sticker: s' + sticker)
                 }}
             />
           
